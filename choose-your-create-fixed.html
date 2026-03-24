@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choose Your Create!</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=EB+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<style>
+:root {
+  --bg:        #0d0b06;
+  --surface:   #181410;
+  --surface-2: #221e13;
+  --surface-3: #2c2718;
+  --border:    #3a3220;
+  --border-2:  #4e4530;
+  --brass:     #c8922a;
+  --brass-dim: #8a6318;
+  --brass-glow:#f0b84a;
+  --copper:    #b8621a;
+  --amber:     #f5c040;
+  --text:      #e2ce9a;
+  --text-dim:  #9a8a60;
+  --text-faint:#5a5038;
+  --green:     #5a9a48;
+  --red:       #b03820;
+  --blue:      #4870a8;
+  --header-bg: #1a1408;
+  --body-grad: #2a1e0880;
+  --dot-color: %23c8922a08;
+  --modal-bg:  var(--surface);
+}
+
+html.light {
+  --bg:        #f5f4f0;
+  --surface:   #ffffff;
+  --surface-2: #f0ede8;
+  --surface-3: #e8e4dc;
+  --border:    #e0d8cc;
+  --border-2:  #c8bfb0;
+  --brass:     #a06c10;
+  --brass-dim: #7a520c;
+  --brass-glow:#c8880a;
+  --copper:    #994415;
+  --amber:     #b06800;
+  --text:      #1a1408;
+  --text-dim:  #5a4e38;
+  --text-faint:#a09070;
+  --green:     #2a7a18;
+  --red:       #c02010;
+  --blue:      #1a4a8a;
+  --header-bg: #ffffff;
+  --body-grad: #c8922a14;
+  --dot-color: %23c8922a14;
+  --modal-bg:  #ffffff;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 16px;
+  min-height: 100vh;
+  transition: background .3s, color .3s;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, var(--body-grad) 0%, transparent 70%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='1' fill='var(--dot-color)'/%3E%3Ccircle cx='0' cy='0' r='1' fill='var(--dot-color)'/%3E%3Ccircle cx='60' cy='0' r='1' fill='var(--dot-color)'/%3E%3Ccircle cx='0' cy='60' r='1' fill='var(--dot-color)'/%3E%3Ccircle cx='60' cy='60' r='1' fill='var(--dot-color)'/%3E%3C/svg%3E");
+}
+
+/* ── HEADER ── */
+.header {
+  text-align: center;
+  padding: 48px 20px 32px;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--header-bg) 0%, transparent 100%);
+  transition: background .3s, border-color .3s;
+}
+.header-gear {
+  position: absolute;
+  opacity: 0.07;
+  animation: spin 30s linear infinite;
+}
+.header-gear.left  { left: -20px; top: 10px; width: 140px; }
+.header-gear.right { right: -20px; top: 10px; width: 140px; animation-direction: reverse; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.header-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--brass-dim);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.header-title {
+  font-family: 'Cinzel', serif;
+  font-weight: 900;
+  font-size: clamp(36px, 6vw, 72px);
+  line-height: 1;
+  background: linear-gradient(135deg, var(--brass-dim) 0%, var(--amber) 40%, var(--brass) 70%, var(--copper) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  margin-bottom: 14px;
+}
+.header-subtitle {
+  color: var(--text-dim);
+  font-size: 17px;
+  font-style: italic;
+  max-width: 560px;
+  margin: 0 auto 20px;
+}
+.header-badges {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.badge {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  padding: 4px 12px;
+  border: 1px solid var(--border-2);
+  border-radius: 2px;
+  color: var(--brass);
+  background: var(--surface-2);
+}
+
+/* ── TOOLBAR ── */
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  transition: background .3s, border-color .3s;
+}
+.toolbar-label { font-family: 'Cinzel', serif; font-size: 11px; letter-spacing: 2px; color: var(--text-faint); text-transform: uppercase; }
+.filter-btn {
+  padding: 5px 14px;
+  border: 1px solid var(--border-2);
+  background: transparent;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 1px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all .15s;
+}
+.filter-btn:hover, .filter-btn.active {
+  border-color: var(--brass);
+  color: var(--brass);
+  background: #c8922a12;
+}
+.toolbar-sep { flex: 1; }
+.selection-info {
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.selection-info span { color: var(--amber); font-weight: 600; }
+
+/* ── THEME TOGGLE ── */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 20px;
+  padding: 4px 12px 4px 6px;
+  cursor: pointer;
+  transition: all .2s;
+  color: var(--text-dim);
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 1px;
+  user-select: none;
+}
+.theme-toggle:hover { border-color: var(--brass); color: var(--brass); }
+.toggle-track {
+  width: 28px; height: 16px;
+  background: var(--surface-3);
+  border-radius: 8px;
+  border: 1px solid var(--border-2);
+  position: relative;
+  transition: background .2s;
+  flex-shrink: 0;
+}
+html.light .toggle-track { background: var(--brass); border-color: var(--brass); }
+.toggle-thumb {
+  width: 10px; height: 10px;
+  background: var(--text-dim);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px; left: 2px;
+  transition: left .2s, background .2s;
+}
+html.light .toggle-thumb { left: 14px; background: #fff; }
+
+/* ── MAIN LAYOUT ── */
+.main { max-width: 1200px; margin: 0 auto; padding: 32px 20px 160px; }
+
+/* ── CATEGORY SECTION ── */
+.category-section { margin-bottom: 36px; }
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+}
+.category-header:hover .cat-title { color: var(--amber); }
+.cat-icon { font-size: 20px; }
+.cat-title {
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--brass);
+  letter-spacing: 1px;
+  transition: color .15s;
+}
+.cat-count { font-size: 12px; color: var(--text-faint); margin-left: auto; }
+.cat-toggle { color: var(--text-faint); font-size: 12px; transition: transform .2s; }
+.cat-toggle.collapsed { transform: rotate(-90deg); }
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+  overflow: hidden;
+  transition: max-height .3s ease;
+}
+.cat-grid.hidden { display: none; }
+
+/* ── MOD CARD ── */
+.mod-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color .15s, background .15s, transform .1s, box-shadow .15s;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.mod-card:hover {
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+.mod-card.selected {
+  border-color: var(--brass);
+  background: #c8922a0d;
+}
+.mod-card.selected::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 2px;
+  box-shadow: inset 0 0 0 1px #c8922a30;
+  pointer-events: none;
+}
+.mod-card.required-dep {
+  opacity: 0.8;
+  cursor: default;
+  border-color: var(--brass-dim);
+  background: #c8922a08;
+}
+.mod-card.required-dep::after {
+  content: 'REQUIRED';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--brass-dim);
+}
+.mod-card.curseforge-only { opacity: 0.75; cursor: pointer; }
+.mod-card.curseforge-only:hover { border-color: var(--copper); background: #b8621a12; }
+.mod-card.curseforge-only::after {
+  content: '↗ CURSEFORGE';
+  position: absolute;
+  top: 6px; right: 8px;
+  font-family: 'Cinzel', serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--copper);
+}
+
+.mod-checkbox {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-2);
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color .15s, background .15s;
+  background: var(--surface-3);
+}
+.mod-card.selected .mod-checkbox,
+.mod-card.required-dep .mod-checkbox {
+  border-color: var(--brass);
+  background: var(--brass);
+}
+.mod-checkbox svg { display: none; }
+.mod-card.selected .mod-checkbox svg,
+.mod-card.required-dep .mod-checkbox svg { display: block; }
+
+.mod-info { flex: 1; min-width: 0; }
+.mod-name {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  margin-bottom: 3px;
+}
+.mod-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+html.light .mod-card { box-shadow: 0 1px 4px #00000010; }
+html.light .mod-card:hover { box-shadow: 0 2px 8px #00000018; }
+html.light .mod-card.selected { box-shadow: 0 2px 8px #a06c1018; }
+
+/* ── SEPARATOR SECTION (REQUIRED / QOL) ── */
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 32px 0 20px;
+}
+.section-divider-line { flex: 1; height: 1px; background: var(--border); }
+.section-divider-text {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── STICKY FOOTER ── */
+.sticky-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 100;
+  background: var(--surface);
+  border-top: 2px solid var(--brass-dim);
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 -8px 32px #00000080;
+  transition: background .3s, border-color .3s;
+}
+.footer-stats { flex: 1; }
+.footer-count {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--amber);
+  line-height: 1;
+}
+.footer-label { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+.footer-actions { display: flex; gap: 10px; }
+
+.btn {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--brass-dim), var(--brass));
+  color: #0d0b06;
+  border: 1px solid var(--brass-glow);
+}
+.btn-primary:hover { background: linear-gradient(135deg, var(--brass), var(--amber)); transform: translateY(-1px); box-shadow: 0 4px 16px #c8922a40; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border-2);
+}
+.btn-ghost:hover { border-color: var(--brass-dim); color: var(--brass); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: #00000090;
+  backdrop-filter: blur(4px);
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.visible { display: flex; }
+.modal {
+  background: var(--modal-bg);
+  border: 1px solid var(--border-2);
+  border-top: 3px solid var(--brass);
+  border-radius: 4px;
+  padding: 32px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 24px 64px #000000c0;
+  transition: background .3s;
+}
+.modal-title {
+  font-family: 'Cinzel', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--brass);
+  margin-bottom: 6px;
+}
+.modal-subtitle { font-size: 14px; color: var(--text-dim); margin-bottom: 24px; }
+.progress-bar-track {
+  height: 6px;
+  background: var(--surface-3);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--brass-dim), var(--amber));
+  border-radius: 3px;
+  transition: width .3s;
+  width: 0%;
+}
+.progress-text { font-size: 13px; color: var(--text-dim); margin-bottom: 20px; }
+.progress-log {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 12px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  color: var(--text-dim);
+  max-height: 160px;
+  overflow-y: auto;
+  margin-bottom: 20px;
+}
+.log-line { margin-bottom: 4px; }
+.log-line.ok { color: var(--green); }
+.log-line.err { color: var(--red); }
+.log-line.info { color: var(--amber); }
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brass-dim); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .cat-grid { grid-template-columns: 1fr; }
+  .header-gear { display: none; }
+  .sticky-footer { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- GEAR SVG DEFS -->
+<svg style="display:none">
+  <defs>
+    <symbol id="gear" viewBox="0 0 100 100">
+      <path d="M43.3 5.4l-3.6 7.8c-2.1.5-4.1 1.2-6 2.1L26.4 11l-9.4 9.4 4.3 7.3c-.9 1.9-1.6 3.9-2.1 6l-7.8 3.6V50l7.8 3.6c.5 2.1 1.2 4.1 2.1 6L17 67l9.4 9.4 7.3-4.3c1.9.9 3.9 1.6 6 2.1l3.6 7.8H56.7l3.6-7.8c2.1-.5 4.1-1.2 6-2.1l7.3 4.3L83 67l-4.3-7.3c.9-1.9 1.6-3.9 2.1-6L88.6 50V37.3l-7.8-3.6c-.5-2.1-1.2-4.1-2.1-6L83 20.4 73.6 11l-7.3 4.3c-1.9-.9-3.9-1.6-6-2.1l-3.6-7.8H43.3zm6.7 28a16.6 16.6 0 1 1 0 33.2A16.6 16.6 0 0 1 50 33.4z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- HEADER -->
+<header class="header">
+  <svg class="header-gear left" viewBox="0 0 100 100"><use href="#gear"/></svg>
+  <svg class="header-gear right" viewBox="0 0 100 100"><use href="#gear"/></svg>
+  <div class="header-eyebrow">Minecraft Modpack Builder</div>
+  <h1 class="header-title">Choose Your Create</h1>
+  <p class="header-subtitle">Select your mods, download a ready-to-import <code style="font-family:monospace;font-size:14px;color:var(--brass)">.mrpack</code> for Prism Launcher, ATLauncher & more.</p>
+  <div class="header-badges">
+    <span class="badge">Minecraft 1.20.1</span>
+    <span class="badge">Forge 47.2.0+</span>
+    <span class="badge">Create 0.5.1j</span>
+    <span class="badge">Modrinth API</span>
+  </div>
+</header>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <span class="toolbar-label">Filter</span>
+  <button class="filter-btn active" onclick="filterCategory('all', this)">All</button>
+  <button class="filter-btn" onclick="filterCategory('logistics', this)">🚂 Logistics</button>
+  <button class="filter-btn" onclick="filterCategory('energy', this)">⚡ Energy</button>
+  <button class="filter-btn" onclick="filterCategory('food', this)">🍳 Food</button>
+  <button class="filter-btn" onclick="filterCategory('utility', this)">🛠️ Utility</button>
+  <button class="filter-btn" onclick="filterCategory('decoration', this)">🎨 Deco</button>
+  <button class="filter-btn" onclick="filterCategory('weapons', this)">⚔️ Weapons</button>
+  <div class="toolbar-sep"></div>
+  <span class="selection-info" id="selectionInfo"><span id="selCount">0</span> mods selected</span>
+  <div class="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">
+    <div class="toggle-track"><div class="toggle-thumb"></div></div>
+    <span id="themeLabel">LIGHT</span>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main" id="mainContent"></main>
+
+<!-- STICKY FOOTER -->
+<div class="sticky-footer">
+  <div class="footer-stats">
+    <div class="footer-count" id="footerCount">0</div>
+    <div class="footer-label">mods selected — ready to build</div>
+  </div>
+  <div class="footer-actions">
+    <button class="btn btn-ghost" onclick="selectAll()">Select All</button>
+    <button class="btn btn-ghost" onclick="clearAll()">Clear</button>
+    <button class="btn btn-primary" id="downloadBtn" onclick="startDownload()">⚙ Generate .mrpack</button>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-title">⚙ Building Your Pack</div>
+    <div class="modal-subtitle" id="modalSubtitle">Fetching mod versions from Modrinth…</div>
+    <div class="progress-bar-track"><div class="progress-bar-fill" id="progressFill"></div></div>
+    <div class="progress-text" id="progressText">Starting…</div>
+    <div class="progress-log" id="progressLog"></div>
+    <div style="display:flex;gap:10px;justify-content:flex-end" id="modalActions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// MOD DATA
+// ─────────────────────────────────────────────
+const CATEGORIES = [
+  {
+    id: "logistics", name: "Logistics & Transport", icon: "🚂",
+    mods: [
+      { name: "Create: Steam 'n' Rails",       slug: "create-steam-n-rails",       desc: "Massive train overhaul with new locomotives & rails" },
+      { name: "Create: Connected",              slug: "create-connected",            desc: "Copycat blocks & better glass panes" },
+      { name: "Create: Power Loader",           slug: "create-power-loader",         desc: "Chunk loading for contraptions" },
+      { name: "Create: Ender Transmission",     slug: "create-ender-transmission",   desc: "Wireless item & fluid transport" },
+      { name: "Create: Mobile Packages",        slug: "create-mobile-packages",      desc: "Portable belt-storage packages" },
+      { name: "Create: Bells & Whistles",       slug: "bellsandwhistles",            desc: "Train station decoration & details" },
+      { name: "Create: Trackwork",              slug: "trackwork",                   desc: "Physics-based treads contraptions" },
+      { name: "Create: Clockwork",              slug: "create-clockwork",            desc: "Physics-based flight contraptions" },
+      { name: "Create: Interactive",            slug: "interactive",                 desc: "Solid contraption collision physics" },
+      { name: "Create: More Drill Heads",       slug: "create-more-drill-heads",     desc: "Tiered mining drills (wood to netherite)" },
+    ]
+  },
+  {
+    id: "energy", name: "Energy & Industry", icon: "⚡",
+    mods: [
+      { name: "Create Crafts & Additions",      slug: "createaddition",              desc: "Bridges Create with Forge Energy/Electricity" },
+      { name: "Create: New Age",                slug: "create-new-age",              desc: "Nuclear power, magnets, and electricity" },
+      { name: "Create: Diesel Generators",      slug: "create-diesel-generators",    desc: "Fuel-based kinetic power sources" },
+      { name: "Create: The Factory Must Grow",  slug: "create-tfmg",                 desc: "Oil refining, steel & petrochemicals" },
+      { name: "Create: Alloyed",                slug: "create-alloyed",              desc: "Steel and bronze alloys & processing" },
+      { name: "Create: Liquid Fuel",            slug: "create-liquid-fuel",          desc: "Burn modded liquids in Blaze Burners" },
+      { name: "Create: Power Grid",             slug: "power-grid",                  desc: "Long-distance power transmission lines" },
+      { name: "Create: Optical",                slug: "create-optical",              desc: "Kinetic & item transmission via lasers" },
+      { name: "Create: Mechanical Extruder",    slug: "create-mechanical-extruder",  desc: "Automated cobble, basalt & obsidian generation" },
+      { name: "Create: Sifting",                slug: "create-sifting",              desc: "Automated resource gathering via sifting" },
+    ]
+  },
+  {
+    id: "food", name: "Food & Farming", icon: "🍳",
+    mods: [
+      { name: "Create: Slice & Dice",           slug: "slice-and-dice",              desc: "Cutting board automation with Farmer's Delight" },
+      { name: "Create Central Kitchen",         slug: "create-central-kitchen",      desc: "Bulk cooking integration" },
+      { name: "Create Confectionery",           slug: "create-confectionery",        desc: "Chocolates, candies, and marshmallows" },
+      { name: "Create: Garnished",              slug: "create-garnished",            desc: "Nuts, berries, and fluid food processing" },
+      { name: "Create: Cafe",                   slug: "create-cafe",                 desc: "Boba, coffee, and full cafe automation" },
+    ]
+  },
+  {
+    id: "utility", name: "Utility & Machinery", icon: "🛠️",
+    mods: [
+      { name: "Create: Enchantment Industry",   slug: "create-enchantment-industry", desc: "XP and Enchanting automation systems" },
+      { name: "Create Jetpack",                 slug: "create-jetpack",              desc: "Steam-powered personal flight" },
+      { name: "Create: Mechanical Spawner",     slug: "create-mechanical-spawner",   desc: "Kinetic-powered mob farms" },
+      { name: "Create: Ore Excavation",         slug: "create-ore-excavation",       desc: "Infinite resource vein excavation" },
+      { name: "Create: Stuff & Additions",      slug: "create-stuff-additions",      desc: "Exoskeletons and brass tools" },
+      { name: "Create: Utilities",              slug: "create-utilities",            desc: "Void chests and adjustable repeaters" },
+      { name: "Create: Estrogen",               slug: "create-estrogen",             desc: "Unique hormone-based mechanics" },
+      { name: "Create: Balanced Flight",        slug: "balancedflight",              desc: "Expensive late-game flight options" },
+      { name: "Create: Tweaked Controllers",    slug: "create-tweaked-controllers",  desc: "Advanced remote piloting & controls" },
+    ]
+  },
+  {
+    id: "decoration", name: "Decoration & Building", icon: "🎨",
+    mods: [
+      { name: "Create Deco",                    slug: "create-deco",                 desc: "Industrial decoration and building blocks" },
+      { name: "Create: Design n' Decor",        slug: "create-design-n-decor",       desc: "Industrial furniture and lighting" },
+      { name: "Create: Crystal Clear",          slug: "create-crystal-clear",        desc: "Glass casings for pipes and shafts" },
+      { name: "Create: Copycats+",              slug: "copycats",                    desc: "Dozens of new copycat block shapes" },
+      { name: "Create: Encased",                slug: "create-encased",              desc: "Decorative casings for kinetic parts" },
+      { name: "Create: Extended Cogwheels",     slug: "extended-cogwheels",          desc: "Tiered decorative gear variants" },
+      { name: "Create: Air Ducts",              slug: "create-air-ducts",            desc: "Decorative ventilation systems" },
+      { name: "Create: Vibrant Vaults",         slug: "create-vibrant-vaults",       desc: "Colored variants for Item Vaults" },
+      { name: "Create: Ironworks",              slug: "create-ironworks",            desc: "Iron-themed building blocks" },
+      { name: "Create: Misc & Things",          slug: "create-misc-and-things",      desc: "Small QoL and decorative additions" },
+      { name: "Create: Dynamic Village",        slug: "dynamic-village",             desc: "Functional mechanical villages" },
+    ]
+  },
+  {
+    id: "weapons", name: "Weapons & Defense", icon: "⚔️",
+    mods: [
+      { name: "Create Big Cannons",             slug: "create-big-cannons",          desc: "Artillery and kinetic physics cannons" },
+      { name: "CBC: Advanced Technologies",     slug: "create-big-cannons-advanced-technologies",   desc: "More cannon tech and ammunition" },
+      { name: "Create: Radars",                 slug: "create-radars",               desc: "Entity detection and monitoring" },
+      { name: "Create: Love & War",             slug: "create-love-and-war",         desc: "Firearms and military logistics" },
+      { name: "Create: Nuclear Shell",          slug: "create-nuclear-shell",        desc: "Endgame Big Cannon explosives" },
+      { name: "Create: Armory",                 slug: "create-armory",               desc: "Turrets and handheld guns" },
+      { name: "Create: Guardian Beam Defense",  slug: "create-guardian-beam-defense",desc: "Automated laser turret systems" },
+      { name: "Create: Militarized",            slug: "create-militarized",          desc: "Grenades, landmines and explosives" },
+      { name: "Create: Compressed",             slug: "create-compressed",           desc: "Blast-resistant bunker blocks" },
+    ]
+  },
+  {
+    id: "extra", name: "Extra", icon: "🏠",
+    mods: [
+      { name: "Create: Structures",             slug: "create-structures",           desc: "Naturally spawning Create machines in world" },
+      { name: "Create: Interiors",              slug: "interiors",                   desc: "Themed indoor decoration" },
+    ]
+  }
+];
+
+const REQUIRED_DEPS = [
+  { name: "Create",                    slug: "create",                  desc: "The core mod — rotational power, contraptions & automation" },
+  { name: "Almost Unified",            slug: "almost-unified",          desc: "Merges all duplicate ores & ingots — critical" },
+  { name: "Architectury API",          slug: "architectury-api",        desc: "Required for tech & energy mods" },
+  { name: "Kotlin for Forge",          slug: "kotlin-for-forge",        desc: "Required for physics & food mods" },
+  { name: "Valkyrien Skies 2",         slug: "valkyrien-skies",         desc: "Required for Trackwork & Clockwork" },
+  { name: "Ritchie's Projectile Lib",  slug: "rpl",                         desc: "Required for Create Big Cannons" },
+  { name: "Patchouli",                 slug: "patchouli",               desc: "Required for in-game guidebooks" },
+  { name: "Farmer's Delight",          slug: "farmers-delight",         desc: "Required for food mods" },
+];
+
+const QOL_MODS = [
+  { name: "JEI – Just Enough Items",   slug: "jei",                     desc: "Must-have recipe viewer" },
+  { name: "Jade",                      slug: "jade",                    desc: "Shows block/machine info on hover" },
+  { name: "Embeddium",                 slug: "embeddium",               desc: "Massive FPS boost for Forge" },
+  { name: "FerriteCore",               slug: "ferrite-core",            desc: "Reduces RAM usage for large packs" },
+  { name: "Oculus",                    slug: "oculus",                  desc: "Enables shaders with Create mods" },
+  { name: "Starlight (Forge)",         slug: "starlight-forge",         desc: "Fixes lighting lag from moving machines" },
+];
+
+// Which optional mods require which required deps
+const MOD_DEPS = {
+  'createaddition':               ['architectury-api', 'almost-unified'],
+  'create-new-age':               ['architectury-api', 'almost-unified'],
+  'create-alloyed':               ['almost-unified'],
+  'create-the-factory-must-grow': ['almost-unified'],
+  'create-diesel-generators':     ['almost-unified'],
+  'create-liquid-fuel':           ['almost-unified'],
+  'create-clockwork':             ['kotlin-for-forge', 'valkyrien-skies'],
+  'trackwork':                    ['kotlin-for-forge', 'valkyrien-skies'],
+  'slice-and-dice':               ['farmers-delight'],
+  'create-central-kitchen':       ['farmers-delight'],
+  'create-garnished':             ['farmers-delight'],
+  'create-confectionery':         ['farmers-delight'],
+  'create-cafe':                  ['farmers-delight'],
+  'create-big-cannons':           ['rpl'],
+  'create-big-cannons-advanced-technologies': ['rpl'],
+  'create-nuclear-shell':         ['rpl'],
+  'create-steam-n-rails':         ['patchouli'],
+  'create-enchantment-industry':  ['patchouli'],
+};
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+const selected = new Set();
+const requiredSlugs = new Set(REQUIRED_DEPS.map(m => m.slug));
+let cancelDownload = false;
+
+// Create is always required. Other deps activate automatically.
+selected.add('create');
+
+// ─────────────────────────────────────────────
+// RENDER
+// ─────────────────────────────────────────────
+function checkSvg() {
+  return `<svg width="11" height="11" viewBox="0 0 12 12" fill="none">
+    <polyline points="1.5,6 4.5,9 10.5,3" stroke="#0d0b06" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>`;
+}
+
+function modCard(mod, isRequired = false) {
+  const isCF = mod.curseforgeOnly;
+  const sel = selected.has(mod.slug);
+  const cls = [
+    'mod-card',
+    sel ? 'selected' : '',
+    isRequired ? 'required-dep' : '',
+    isCF ? 'curseforge-only' : ''
+  ].filter(Boolean).join(' ');
+  const onclick = isRequired ? '' : isCF ? `onclick="window.open('https://www.curseforge.com/minecraft/mc-mods/create-trackwork', '_blank')"` : `onclick="toggleMod('${mod.slug}', this)"`;
+  const slugAttr = mod.slug ? `data-slug="${mod.slug}"` : '';
+  return `
+    <div class="${cls}" ${onclick} ${slugAttr} title="${isCF ? 'Available on CurseForge only — not downloadable here' : ''}">
+      <div class="mod-checkbox">${sel ? checkSvg() : ''}</div>
+      <div class="mod-info">
+        <div class="mod-name">${mod.name}</div>
+        <div class="mod-desc">${mod.desc}</div>
+      </div>
+    </div>`;
+}
+
+function renderAll() {
+  const main = document.getElementById('mainContent');
+  let html = '';
+
+  CATEGORIES.forEach(cat => {
+    const gridId = `grid-${cat.id}`;
+    html += `
+      <div class="category-section" data-category="${cat.id}">
+        <div class="category-header" onclick="toggleCat('${gridId}', this)">
+          <span class="cat-icon">${cat.icon}</span>
+          <span class="cat-title">${cat.name}</span>
+          <span class="cat-count">${cat.mods.length} mods</span>
+          <span class="cat-toggle">▼</span>
+        </div>
+        <div class="cat-grid" id="${gridId}">
+          ${cat.mods.map(m => modCard(m)).join('')}
+        </div>
+      </div>`;
+  });
+
+  html += `
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">⚙ Required Dependencies — always included</div>
+      <div class="section-divider-line"></div>
+    </div>
+    <div class="cat-grid" style="margin-bottom:32px">
+      ${REQUIRED_DEPS.map(m => modCard(m, true)).join('')}
+    </div>
+    <div class="section-divider">
+      <div class="section-divider-line"></div>
+      <div class="section-divider-text">★ Quality of Life Recommendations</div>
+      <div class="section-divider-line"></div>
+    </div>
+    <div class="cat-grid" style="margin-bottom:32px">
+      ${QOL_MODS.map(m => modCard(m)).join('')}
+    </div>`;
+
+  main.innerHTML = html;
+  updateCount();
+}
+
+function toggleCat(gridId, header) {
+  const grid = document.getElementById(gridId);
+  const toggle = header.querySelector('.cat-toggle');
+  grid.classList.toggle('hidden');
+  toggle.classList.toggle('collapsed');
+}
+
+function toggleMod(slug, card) {
+  if (selected.has(slug)) {
+    selected.delete(slug);
+    card.classList.remove('selected');
+    card.querySelector('.mod-checkbox').innerHTML = '';
+  } else {
+    selected.add(slug);
+    card.classList.add('selected');
+    card.querySelector('.mod-checkbox').innerHTML = checkSvg();
+  }
+  updateRequiredDeps();
+  updateCount();
+}
+
+function updateRequiredDeps() {
+  // Build set of needed deps from all currently selected mods
+  const needed = new Set(['create']); // Create always needed
+  for (const slug of selected) {
+    (MOD_DEPS[slug] || []).forEach(d => needed.add(d));
+  }
+
+  // Update selected set and DOM for each required dep
+  REQUIRED_DEPS.forEach(m => {
+    const shouldBeOn = needed.has(m.slug);
+    if (shouldBeOn) selected.add(m.slug); else selected.delete(m.slug);
+
+    const card = document.querySelector(`.required-dep[data-slug="${m.slug}"]`);
+    if (!card) return;
+    card.classList.toggle('selected', shouldBeOn);
+    card.querySelector('.mod-checkbox').innerHTML = shouldBeOn ? checkSvg() : '';
+  });
+}
+
+function updateCount() {
+  const count = selected.size;
+  document.getElementById('selCount').textContent = count;
+  document.getElementById('footerCount').textContent = count;
+}
+
+function filterCategory(id, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.category-section').forEach(sec => {
+    sec.style.display = (id === 'all' || sec.dataset.category === id) ? '' : 'none';
+  });
+}
+
+function selectAll() {
+  CATEGORIES.forEach(cat => cat.mods.forEach(m => { if (m.slug) selected.add(m.slug); }));
+  QOL_MODS.forEach(m => selected.add(m.slug));
+  document.querySelectorAll('.mod-card:not(.required-dep)').forEach(card => {
+    card.classList.add('selected');
+    card.querySelector('.mod-checkbox').innerHTML = checkSvg();
+  });
+  updateRequiredDeps();
+  updateCount();
+}
+
+function clearAll() {
+  selected.clear();
+  selected.add('create'); // Keep Create
+  document.querySelectorAll('.mod-card:not(.required-dep)').forEach(card => {
+    card.classList.remove('selected');
+    card.querySelector('.mod-checkbox').innerHTML = '';
+  });
+  updateRequiredDeps();
+  updateCount();
+}
+
+// ─────────────────────────────────────────────
+// DOWNLOAD / MRPACK GENERATION
+// ─────────────────────────────────────────────
+let logEl, progressFill, progressText;
+
+function log(msg, type = '') {
+  const line = document.createElement('div');
+  line.className = `log-line ${type}`;
+  line.textContent = msg;
+  logEl.appendChild(line);
+  logEl.scrollTop = logEl.scrollHeight;
+}
+
+function setProgress(pct, text) {
+  progressFill.style.width = pct + '%';
+  progressText.textContent = text;
+}
+
+function closeModal() {
+  cancelDownload = true;
+  document.getElementById('modalOverlay').classList.remove('visible');
+}
+
+async function fetchModInfo(slug) {
+  const url = `https://api.modrinth.com/v2/project/${slug}/version?` +
+    `game_versions=${encodeURIComponent(JSON.stringify(["1.20.1"]))}&` +
+    `loaders=${encodeURIComponent(JSON.stringify(["forge"]))}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  const versions = await res.json();
+  if (!versions.length) throw new Error("No 1.20.1 Forge version found");
+  const ver = versions[0];
+  const file = ver.files.find(f => f.primary) || ver.files[0];
+  return {
+    path: `mods/${file.filename}`,
+    hashes: file.hashes,
+    env: { client: "required", server: "required" },
+    downloads: [file.url],
+    fileSize: file.size
+  };
+}
+
+async function startDownload() {
+  if (selected.size === 0) { alert("Select at least one mod first!"); return; }
+  cancelDownload = false;
+
+  // Gather all slugs to process
+  const allSlugs = [...selected];
+
+  document.getElementById('modalOverlay').classList.add('visible');
+  document.getElementById('modalSubtitle').textContent =
+    `Fetching ${allSlugs.length} mods from Modrinth API…`;
+  logEl = document.getElementById('progressLog');
+  progressFill = document.getElementById('progressFill');
+  progressText = document.getElementById('progressText');
+  logEl.innerHTML = '';
+  document.getElementById('modalActions').innerHTML =
+    `<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>`;
+
+  const files = [];
+  let done = 0;
+
+  log('Starting Modrinth API queries…', 'info');
+
+  for (const slug of allSlugs) {
+    if (cancelDownload) { log('Cancelled.', 'err'); return; }
+    try {
+      const fileEntry = await fetchModInfo(slug);
+      files.push(fileEntry);
+      done++;
+      log(`✓ ${slug}`, 'ok');
+    } catch (e) {
+      log(`✗ ${slug} — ${e.message}`, 'err');
+      done++;
+    }
+    setProgress(Math.round((done / allSlugs.length) * 80), `Fetched ${done}/${allSlugs.length} mods…`);
+    await new Promise(r => setTimeout(r, 80)); // Small delay to be nice to the API
+  }
+
+  if (cancelDownload) return;
+  log('Building modrinth.index.json…', 'info');
+  setProgress(85, 'Building pack index…');
+
+  const packName = "My Choose-Your-Create Pack";
+  const index = {
+    formatVersion: 1,
+    game: "minecraft",
+    versionId: "1.0.0",
+    name: packName,
+    summary: `Custom Create modpack — built with Choose Your Create! (${new Date().toLocaleDateString()})`,
+    files,
+    dependencies: {
+      minecraft: "1.20.1",
+      forge: "47.2.0"
+    }
+  };
+
+  log('Zipping .mrpack…', 'info');
+  setProgress(90, 'Creating .mrpack zip…');
+
+  const zip = new JSZip();
+  zip.file("modrinth.index.json", JSON.stringify(index, null, 2));
+  zip.folder("overrides").folder("mods"); // Required by mrpack spec
+
+  const curseforgeNote = CATEGORIES.flatMap(c => c.mods).filter(m => m.curseforgeOnly).map(m => m.name);
+
+  const readme = `CHOOSE YOUR CREATE — Custom Modpack
+====================================
+Built: ${new Date().toLocaleString()}
+Minecraft: 1.20.1  |  Forge: 47.2.0+
+Mods included: ${files.length}
+
+HOW TO IMPORT
+-------------
+1. Open Prism Launcher, ATLauncher, or any Modrinth-compatible launcher
+2. Click "Add Instance" → "Import from zip"
+3. Select this .mrpack file
+4. Launch and enjoy!
+
+NOTE: The launcher will auto-download all mod JARs from Modrinth.
+
+${curseforgeNote.length > 0 ? `CURSEFORGE-ONLY MODS (install manually)\n----------------------------------------\nThese mods could not be included automatically:\n${curseforgeNote.map(n => '• ' + n).join('\n')}` : ''}
+
+Generated by Choose Your Create!
+`;
+  zip.file("overrides/README.txt", readme);
+
+  const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE" });
+  setProgress(100, `Done! ${files.length} mods bundled.`);
+  log(`Pack ready — ${files.length} mods, ${(blob.size / 1024).toFixed(1)} KB`, 'ok');
+
+  document.getElementById('modalActions').innerHTML = `
+    <button class="btn btn-ghost" onclick="closeModal()">Close</button>
+    <button class="btn btn-primary" onclick="doSave()">⬇ Save .mrpack</button>
+  `;
+  window._packBlob = blob;
+}
+
+function doSave() {
+  saveAs(window._packBlob, 'choose-your-create.mrpack');
+}
+
+// ─────────────────────────────────────────────
+// THEME TOGGLE
+// ─────────────────────────────────────────────
+function toggleTheme() {
+  const isLight = document.documentElement.classList.toggle('light');
+  document.getElementById('themeLabel').textContent = isLight ? 'DARK' : 'LIGHT';
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+renderAll();
+updateRequiredDeps();
+updateCount();
+</script>
+</body>
+</html>
